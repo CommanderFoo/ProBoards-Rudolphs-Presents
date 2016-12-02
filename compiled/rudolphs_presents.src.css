@@ -307,7 +307,6 @@
 
 .rudolphs-presents-profile-presents-present-wiggle:hover {
 
-	cursor: pointer;
 	animation-name: rudolphs-presents-present-wiggle;
 	animation-duration: 100ms;
 	animation-iteration-count: infinite;
@@ -316,3 +315,42 @@
 
 }
 
+.rudolphs-presents-profile-presents-present-hide-present {
+
+	animation-name: rudolphs-presents-present-hide-present;
+	animation-duration: 1000ms;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in-out;
+	animation-fill-mode: forwards;
+
+}
+
+@keyframes rudolphs-presents-present-hide-present {
+
+	to {
+		transform: rotateY(-90deg);
+	}
+
+}
+
+.rudolphs-presents-profile-presents-present-show {
+
+	animation-name: rudolphs-presents-present-show;
+	animation-duration: 500ms;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in-out;
+	animation-fill-mode: forwards;
+
+}
+
+@keyframes rudolphs-presents-present-show {
+
+	from {
+		transform: rotateY(-90deg);
+	}
+
+	to {
+		transform: rotateY(0deg);
+	}
+
+}

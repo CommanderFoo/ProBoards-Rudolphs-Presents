@@ -599,7 +599,7 @@ var Rudolphs_Presents_Profile_Box = function () {
 
 				if (Rudolphs_Presents.date.get_time_left(true) > 0 || !presents[p].o) {
 					if (yootil.page.member.id() != yootil.user.id()) {
-						title = "Hey! That is not your present, you can't open that.";
+						title = "Hey! That is not your present, you can not open that.";
 					} else {
 						if (Rudolphs_Presents.date.get_time_left(true) <= 0) {
 							title = "Present can be opened.";
@@ -644,12 +644,22 @@ var Rudolphs_Presents_Profile_Box = function () {
 
 						$span.removeClass("rudolphs-presents-profile-presents-present-wiggle");
 
-						$span.css({
+						var css = {
 
 							"background-image": "url(\"" + Rudolphs_Presents.images.items + "\")",
 							"background-position": "-" + x_offset + "px -" + y_offset + "px"
 
-						});
+						};
+
+						if (typeof $span.get(0).style.animation !== "undefined") {
+							$span.on("animationend", function () {
+								$span.css(css).addClass("rudolphs-presents-profile-presents-present-show");
+							});
+
+							$span.addClass("rudolphs-presents-profile-presents-present-hide-present");
+						} else {
+							$span.css(css).addClass("rudolphs-presents-profile-presents-present-show");;
+						}
 
 						var present = Rudolphs_Presents.api.present(yootil.user.id()).open($span.attr("data-present-id"), uid);
 

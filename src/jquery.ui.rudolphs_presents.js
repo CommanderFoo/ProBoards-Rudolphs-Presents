@@ -11,4 +11,3 @@ $.widget("ui.rudolphs_presents", $.ui.dialog, {
 	}
 
 });
-
