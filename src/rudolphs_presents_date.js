@@ -2,7 +2,7 @@ class Rudolphs_Presents_Date {
 
 	constructor(){
 		this.ts = pb.data("serverDate");
-		this.open_date = new Date(this.get_current_year() + "-12-02 0:00:00").getTime();
+		this.open_date = new Date(this.get_current_year() + "-12-25 0:00:00").getTime();
 	}
 
 	get_current_year(){
