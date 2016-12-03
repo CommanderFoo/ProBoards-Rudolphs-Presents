@@ -68,6 +68,8 @@ class Rudolphs_Presents_Profile_Box {
 				items_html += "<span title='" + title + "'" + data_attr + " data-present-id='" + presents[p].i + "' class='rudolphs-presents-profile-presents-present" + klass + "' style='background-image: url(\"" + image + "\");" + pos + "'></span>";
 			}
 
+			items_html = "<div class='rudolphs-presents-profile-presents-header'><span>Presents</span></div>" + items_html;
+
 			if(using_custom){
 				$first_box.addClass("rudolphs-presents-profile-presents").show().html(items_html);
 			} else {
@@ -112,7 +114,7 @@ class Rudolphs_Presents_Profile_Box {
 						let present = Rudolphs_Presents.api.present(yootil.user.id()).open($span.attr("data-present-id"), uid);
 
 						if(present){
-							$span.attr("title", "Present from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ")");
+							$span.attr("title", "Present from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ").");
 						} else {
 							$span.removeAttr("title");
 						}

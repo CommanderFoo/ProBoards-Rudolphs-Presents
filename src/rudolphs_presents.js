@@ -21,6 +21,10 @@ class Rudolphs_Presents {
 
 			new Rudolphs_Presents_Profile_Box();
 		}
+
+		if(yootil.user.logged_in()){
+			this.show_present_notification();
+		}
 	}
 
 	static setup(){
@@ -44,6 +48,12 @@ class Rudolphs_Presents {
 
 				this._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, value));
 			}
+		}
+	}
+
+	static show_present_notification(){
+		if(this.api.present(yootil.user.id()).unseen()){
+			new Rudolphs_Presents_Notification();
 		}
 	}
 

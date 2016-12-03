@@ -26,7 +26,7 @@ Rudolphs_Presents.api = class {
 		return {
 
 			data(){
-				user_data.set_data([{t:10}]);
+				user_data.set_data([{t: 10, s: 0}]);
 			}
 
 		};
@@ -180,6 +180,7 @@ Rudolphs_Presents.api = class {
 					for(let p = 0; p < presents.length; p ++){
 						if(presents[p].i == puid && presents[p].u == fuid){
 							presents[p].o = 1;
+							presents[p].s = 1;
 
 							Rudolphs_Presents.api.set(user_id).present_data(presents);
 							Rudolphs_Presents.api.save(user_id);
@@ -190,6 +191,29 @@ Rudolphs_Presents.api = class {
 				}
 
 				return null;
+			},
+
+			unseen(){
+				let presents = Rudolphs_Presents.api.get(user_id).presents();
+
+				for(let p = 0; p < presents.length; p ++){
+					if(!presents[p].o && !presents[p].s){
+						return true;
+					}
+				}
+
+				return false;
+			},
+
+			mark_all_seen(){
+				let presents = Rudolphs_Presents.api.get(user_id).presents();
+
+				for(let p = 0; p < presents.length; p ++){
+					presents[p].s = 1;
+				}
+
+				Rudolphs_Presents.api.set(user_id).present_data(presents);
+				Rudolphs_Presents.api.save(user_id);
 			}
 
 		};

@@ -43,6 +43,39 @@ $.widget("ui.rudolphs_presents", $.ui.dialog, {
 	}
 });
 
+var Rudolphs_Presents_Notification = function () {
+	function Rudolphs_Presents_Notification() {
+		_classCallCheck(this, Rudolphs_Presents_Notification);
+
+		var imgs = ["a", "b", "c", "d", "e", "f", "g", "h"];
+		var image = Rudolphs_Presents.images[imgs[~~(Math.random() * imgs.length)]];
+
+		var $notification = $("<div title='You have received a present' class='rudolphs-presents-notification' style='background-image: url(\"" + image + "\");'></div>");
+
+		$notification.fadeIn(1000, function () {
+			return $notification.addClass("rudolphs-presents-notification-rotate");
+		});
+		$notification.on("click", this.mark_all_seen);
+
+		$("body").append($notification);
+	}
+
+	_createClass(Rudolphs_Presents_Notification, [{
+		key: "mark_all_seen",
+		value: function mark_all_seen() {
+			var $note = $(this);
+
+			Rudolphs_Presents.api.present(yootil.user.id()).mark_all_seen();
+
+			$note.fadeOut(1500, function () {
+				return $note.remove();
+			});
+		}
+	}]);
+
+	return Rudolphs_Presents_Notification;
+}();
+
 var Rudolphs_Presents_Date = function () {
 	function Rudolphs_Presents_Date() {
 		_classCallCheck(this, Rudolphs_Presents_Date);
@@ -620,6 +653,8 @@ var Rudolphs_Presents_Profile_Box = function () {
 				items_html += "<span title='" + title + "'" + data_attr + " data-present-id='" + presents[p].i + "' class='rudolphs-presents-profile-presents-present" + klass + "' style='background-image: url(\"" + image + "\");" + pos + "'></span>";
 			}
 
+			items_html = "<div class='rudolphs-presents-profile-presents-header'><span>Presents</span></div>" + items_html;
+
 			if (using_custom) {
 				$first_box.addClass("rudolphs-presents-profile-presents").show().html(items_html);
 			} else {
@@ -664,7 +699,7 @@ var Rudolphs_Presents_Profile_Box = function () {
 						var present = Rudolphs_Presents.api.present(yootil.user.id()).open($span.attr("data-present-id"), uid);
 
 						if (present) {
-							$span.attr("title", "Present from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ")");
+							$span.attr("title", "Present from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ").");
 						} else {
 							$span.removeAttr("title");
 						}
@@ -735,6 +770,10 @@ var Rudolphs_Presents = function () {
 
 				new Rudolphs_Presents_Profile_Box();
 			}
+
+			if (yootil.user.logged_in()) {
+				this.show_present_notification();
+			}
 		}
 	}, {
 		key: "setup",
@@ -786,6 +825,13 @@ var Rudolphs_Presents = function () {
 				}
 			}
 		}
+	}, {
+		key: "show_present_notification",
+		value: function show_present_notification() {
+			if (this.api.present(yootil.user.id()).unseen()) {
+				new Rudolphs_Presents_Notification();
+			}
+		}
 	}]);
 
 	return Rudolphs_Presents;
@@ -828,7 +874,7 @@ Rudolphs_Presents.api = function () {
 
 			return {
 				data: function data() {
-					user_data.set_data([{ t: 10 }]);
+					user_data.set_data([{ t: 10, s: 0 }]);
 				}
 			};
 		}
@@ -1001,6 +1047,7 @@ Rudolphs_Presents.api = function () {
 						for (var p = 0; p < presents.length; p++) {
 							if (presents[p].i == puid && presents[p].u == fuid) {
 								presents[p].o = 1;
+								presents[p].s = 1;
 
 								Rudolphs_Presents.api.set(user_id).present_data(presents);
 								Rudolphs_Presents.api.save(user_id);
@@ -1011,6 +1058,27 @@ Rudolphs_Presents.api = function () {
 					}
 
 					return null;
+				},
+				unseen: function unseen() {
+					var presents = Rudolphs_Presents.api.get(user_id).presents();
+
+					for (var p = 0; p < presents.length; p++) {
+						if (!presents[p].o && !presents[p].s) {
+							return true;
+						}
+					}
+
+					return false;
+				},
+				mark_all_seen: function mark_all_seen() {
+					var presents = Rudolphs_Presents.api.get(user_id).presents();
+
+					for (var p = 0; p < presents.length; p++) {
+						presents[p].s = 1;
+					}
+
+					Rudolphs_Presents.api.set(user_id).present_data(presents);
+					Rudolphs_Presents.api.save(user_id);
 				}
 			};
 		}

@@ -37,6 +37,30 @@ $.widget("ui.rudolphs_presents", $.ui.dialog, {
 
 });
 
+class Rudolphs_Presents_Notification {
+
+	constructor(){
+		let imgs = ["a", "b", "c", "d", "e", "f", "g", "h"];
+		let image = Rudolphs_Presents.images[imgs[~~ (Math.random() * imgs.length)]];
+
+		let $notification = $("<div title='You have received a present' class='rudolphs-presents-notification' style='background-image: url(\""  + image +"\");'></div>");
+
+		$notification.fadeIn(1000, () => $notification.addClass("rudolphs-presents-notification-rotate"));
+		$notification.on("click", this.mark_all_seen);
+
+		$("body").append($notification);
+	}
+
+	mark_all_seen(){
+		let $note = $(this);
+
+		Rudolphs_Presents.api.present(yootil.user.id()).mark_all_seen();
+
+		$note.fadeOut(1500, () => $note.remove());
+	}
+
+}
+
 class Rudolphs_Presents_Date {
 
 	constructor(){
@@ -545,6 +569,8 @@ class Rudolphs_Presents_Profile_Box {
 				items_html += "<span title='" + title + "'" + data_attr + " data-present-id='" + presents[p].i + "' class='rudolphs-presents-profile-presents-present" + klass + "' style='background-image: url(\"" + image + "\");" + pos + "'></span>";
 			}
 
+			items_html = "<div class='rudolphs-presents-profile-presents-header'><span>Presents</span></div>" + items_html;
+
 			if(using_custom){
 				$first_box.addClass("rudolphs-presents-profile-presents").show().html(items_html);
 			} else {
@@ -589,7 +615,7 @@ class Rudolphs_Presents_Profile_Box {
 						let present = Rudolphs_Presents.api.present(yootil.user.id()).open($span.attr("data-present-id"), uid);
 
 						if(present){
-							$span.attr("title", "Present from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ")");
+							$span.attr("title", "Present from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ").");
 						} else {
 							$span.removeAttr("title");
 						}
@@ -647,6 +673,10 @@ class Rudolphs_Presents {
 
 			new Rudolphs_Presents_Profile_Box();
 		}
+
+		if(yootil.user.logged_in()){
+			this.show_present_notification();
+		}
 	}
 
 	static setup(){
@@ -670,6 +700,12 @@ class Rudolphs_Presents {
 
 				this._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, value));
 			}
+		}
+	}
+
+	static show_present_notification(){
+		if(this.api.present(yootil.user.id()).unseen()){
+			new Rudolphs_Presents_Notification();
 		}
 	}
 
@@ -703,7 +739,7 @@ Rudolphs_Presents.api = class {
 		return {
 
 			data(){
-				user_data.set_data([{t:10}]);
+				user_data.set_data([{t: 10, s: 0}]);
 			}
 
 		};
@@ -857,6 +893,7 @@ Rudolphs_Presents.api = class {
 					for(let p = 0; p < presents.length; p ++){
 						if(presents[p].i == puid && presents[p].u == fuid){
 							presents[p].o = 1;
+							presents[p].s = 1;
 
 							Rudolphs_Presents.api.set(user_id).present_data(presents);
 							Rudolphs_Presents.api.save(user_id);
@@ -867,6 +904,29 @@ Rudolphs_Presents.api = class {
 				}
 
 				return null;
+			},
+
+			unseen(){
+				let presents = Rudolphs_Presents.api.get(user_id).presents();
+
+				for(let p = 0; p < presents.length; p ++){
+					if(!presents[p].o && !presents[p].s){
+						return true;
+					}
+				}
+
+				return false;
+			},
+
+			mark_all_seen(){
+				let presents = Rudolphs_Presents.api.get(user_id).presents();
+
+				for(let p = 0; p < presents.length; p ++){
+					presents[p].s = 1;
+				}
+
+				Rudolphs_Presents.api.set(user_id).present_data(presents);
+				Rudolphs_Presents.api.save(user_id);
 			}
 
 		};

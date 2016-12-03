@@ -11,6 +11,7 @@
 	display: inline-block;
 	margin: 4px;
 	padding: 0px;
+	cursor: pointer;
 
 }
 
@@ -326,6 +327,66 @@
 
 	to {
 		transform: rotateY(0deg);
+	}
+
+}
+
+.rudolphs-presents-profile-presents {
+
+	margin-top: 20px;
+
+}
+
+.rudolphs-presents-profile-presents-header {
+
+	position: absolute;
+
+}
+
+.rudolphs-presents-profile-presents-header span {
+
+	position: relative;
+	top: -20px;
+	left: -5px;
+	font-size: 10px;
+	padding: 4px 7px;
+	border: 1px solid #e6e6e6;
+	border-radius: 10px;
+	background: #ffffff;
+
+}
+
+.rudolphs-presents-notification {
+
+	cursor: pointer;
+	position: fixed;
+	top: 25px;
+	left: 25px;
+	width: 64px;
+	height: 64px;
+	z-index: 1500;
+	display: none;
+
+}
+
+.rudolphs-presents-notification-rotate {
+
+	animation-name: rudolphs-presents-notification-rotate;
+	animation-duration: 2800ms;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+	animation-delay: 1500ms;
+
+}
+
+@keyframes rudolphs-presents-notification-rotate {
+
+	from {
+		transform: rotateY(0deg);
+	}
+
+	to {
+		transform: rotateY(360deg);
 	}
 
 }
