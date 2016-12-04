@@ -33,11 +33,11 @@ class Rudolphs_Presents_User_Data {
 	}
 
 	get_tokens(){
-		return this._DATA[0].t;
+		return parseInt(this._DATA[0].t, 10);
 	}
 
 	get_total_sent(){
-		return this._DATA[0].s;
+		return parseInt(this._DATA[0].s, 10);
 	}
 
 	get_data(){

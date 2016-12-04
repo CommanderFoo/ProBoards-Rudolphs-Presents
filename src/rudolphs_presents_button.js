@@ -28,8 +28,8 @@ class Rudolphs_Presents_Button {
 		if(tokens <= 0){
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - All Presents Sent",
-				msg: "You currently have no more presents to send, however, you have a chance to earn more when you post.",
+				title: "Rudolph's Presents - No Present Tokens",
+				msg: "You currently have no more present tokens, however, you have a chance to earn more when you post.",
 				width: 350,
 				height: 150
 
@@ -38,20 +38,20 @@ class Rudolphs_Presents_Button {
 			return false;
 		}
 
-		// Has a present already been sent to this user?
+		// Has a present already been sent max allowed presents to this user?
 
-		/*if(Rudolphs_Presents.api.present(yootil.page.member.id()).has_received_from(yootil.user.id())){
+		if(Rudolphs_Presents.api.present(yootil.page.member.id()).has_received_max_from(yootil.user.id())){
 			new Rudolphs_Presents_Info_Dialog({
 
 				title: "Rudolph's Presents - Already Sent",
-				msg: "You have already sent a present to this user, you can't send another.",
+				msg: "You have already sent the maximum amount of presents to this user, you can't send anymore.",
 				width: 350,
 				height: 150
 
 			});
 
 			return false;
-		}*/
+		}
 
 		if(!Rudolphs_Presents.api.space(yootil.page.member.id()).left()){
 			new Rudolphs_Presents_Info_Dialog({
@@ -156,6 +156,8 @@ class Rudolphs_Presents_Button {
 					this.reset_item_dialog();
 					this.update_token_counter();
 
+					Rudolphs_Presents.api.sync(yootil.user.id());
+
 					new Rudolphs_Presents_Info_Dialog({
 
 						title: "Rudolph's Presents - Present Sent",
@@ -230,12 +232,12 @@ class Rudolphs_Presents_Button {
 		let $extra = $("<div class='rudolphs-presents-dialog-button-pane-extra'></div>");
 		let tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-		$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Presents Left:</strong> <span id="rudolphs-presents-presents-left-counter">' + parseInt(tokens) + '</span></span></button>').on("click", () => {
+		$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Present Tokens:</strong> <span id="rudolphs-presents-presents-left-counter">' + parseInt(tokens) + '</span></span></button>').on("click", () => {
 
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents Left",
-				msg: "This is the amount of presents you have left to send.<br /><br />When posting, you have chance to earn more.",
+				title: "Rudolph's Present Tokens",
+				msg: "This is the amount of presents you have left to send.<br /><br />When posting, you have chance to earn more tokens.",
 				width: 350,
 				height: 160
 

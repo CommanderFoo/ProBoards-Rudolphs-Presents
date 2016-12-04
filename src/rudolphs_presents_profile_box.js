@@ -65,6 +65,10 @@ class Rudolphs_Presents_Profile_Box {
 					title = "Present from " + yootil.html_encode(presents[p].n, true) + " (ID# " + presents[p].u + ").";
 				}
 
+				if(yootil.page.member.id() == yootil.user.id() && Rudolphs_Presents.permissions.member_banned()){
+					title = "You can never open this present, you are banned.";
+				}
+
 				items_html += "<span title='" + title + "'" + data_attr + " data-present-id='" + presents[p].i + "' class='rudolphs-presents-profile-presents-present" + klass + "' style='background-image: url(\"" + image + "\");" + pos + "'></span>";
 			}
 
@@ -83,7 +87,7 @@ class Rudolphs_Presents_Profile_Box {
 				}
 			}
 
-			if(yootil.page.member.id() == yootil.user.id()){
+			if(yootil.page.member.id() == yootil.user.id() && !Rudolphs_Presents.permissions.member_banned()){
 				if(Rudolphs_Presents.date.get_time_left(true) <= 0){
 					$(".rudolphs-presents-profile-presents").find("span[data-present-not-opened]").on("click", function(){
 						let $span = $(this);

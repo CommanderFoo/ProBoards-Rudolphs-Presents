@@ -3,10 +3,14 @@ class Rudolphs_Presents {
 	static init(){
 		this.PLUGIN_ID = "pd_rudolphs_presents";
 		this.PLUGIN_KEY = "pixeldepth_rudolphs_presents";
-		this.images = {};
+
 		this._KEY_DATA = new Map();
 
+		this.images = {};
+		this.settings = {};
+
 		this.setup_data();
+		this.api.init();
 		this.setup();
 		this.date = new Rudolphs_Presents_Date();
 
@@ -15,15 +19,36 @@ class Rudolphs_Presents {
 
 	static ready(){
 		if(yootil.location.profile_home()){
-			if(yootil.user.logged_in() && yootil.user.id() != yootil.page.member.id()){
-				new Rudolphs_Presents_Button();
+			if(!this.permissions.member_banned() && this.permissions.group_can_send_presents()){
+				if(yootil.user.logged_in() && yootil.user.id() != yootil.page.member.id()){
+					new Rudolphs_Presents_Button();
+				}
 			}
 
 			new Rudolphs_Presents_Profile_Box();
 		}
 
-		if(yootil.user.logged_in()){
+		if(yootil.user.logged_in() && !this.permissions.member_banned()){
 			this.show_present_notification();
+		}
+
+		let location_check = (
+
+			yootil.location.search_results() ||
+			yootil.location.message_thread() ||
+			yootil.location.thread() ||
+			yootil.location.recent_posts()
+
+		);
+
+		if(location_check){
+			new Rudolphs_Presents_Mini_Profile_Stats();
+		}
+
+		if(!this.permissions.member_banned()){
+			if((yootil.location.posting() || yootil.location.thread())){
+				new Rudolphs_Presents_Post_Chance();
+			}
 		}
 	}
 
@@ -31,8 +56,7 @@ class Rudolphs_Presents {
 		let plugin = pb.plugin.get(this.PLUGIN_ID);
 
 		if(plugin && plugin.settings){
-			let plugin_settings = plugin.settings;
-
+			this.settings = plugin.settings;
 			this.images = plugin.images;
 		}
 	}
@@ -40,11 +64,11 @@ class Rudolphs_Presents {
 	static setup_data(){
 		let user_data = proboards.plugin.keys.data[this.PLUGIN_KEY];
 
-		for(let [key, value] of Object.entries(user_data)){
+		for(let key in user_data){
 			let id = parseInt(key, 10) || 0;
 
 			if(id && !this._KEY_DATA.has(id)){
-				value = (!value)? [{t: 10, s: 0}] : value;
+				let value = (!user_data[key])? [{t: 10, s: 0}] : user_data[key];
 
 				this._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, value));
 			}

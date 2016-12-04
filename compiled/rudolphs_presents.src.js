@@ -65,7 +65,7 @@ class Rudolphs_Presents_Date {
 
 	constructor(){
 		this.ts = pb.data("serverDate");
-		this.open_date = new Date(this.get_current_year() + "-12-02 0:00:00").getTime();
+		this.open_date = new Date(this.get_current_year(), 11, 25, 0, 0, 0).getTime();
 	}
 
 	get_current_year(){
@@ -158,11 +158,11 @@ class Rudolphs_Presents_User_Data {
 	}
 
 	get_tokens(){
-		return this._DATA[0].t;
+		return parseInt(this._DATA[0].t, 10);
 	}
 
 	get_total_sent(){
-		return this._DATA[0].s;
+		return parseInt(this._DATA[0].s, 10);
 	}
 
 	get_data(){
@@ -279,8 +279,8 @@ class Rudolphs_Presents_Button {
 		if(tokens <= 0){
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - All Presents Sent",
-				msg: "You currently have no more presents to send, however, you have a chance to earn more when you post.",
+				title: "Rudolph's Presents - No Present Tokens",
+				msg: "You currently have no more present tokens, however, you have a chance to earn more when you post.",
 				width: 350,
 				height: 150
 
@@ -289,20 +289,20 @@ class Rudolphs_Presents_Button {
 			return false;
 		}
 
-		// Has a present already been sent to this user?
+		// Has a present already been sent max allowed presents to this user?
 
-		/*if(Rudolphs_Presents.api.present(yootil.page.member.id()).has_received_from(yootil.user.id())){
+		if(Rudolphs_Presents.api.present(yootil.page.member.id()).has_received_max_from(yootil.user.id())){
 			new Rudolphs_Presents_Info_Dialog({
 
 				title: "Rudolph's Presents - Already Sent",
-				msg: "You have already sent a present to this user, you can't send another.",
+				msg: "You have already sent the maximum amount of presents to this user, you can't send anymore.",
 				width: 350,
 				height: 150
 
 			});
 
 			return false;
-		}*/
+		}
 
 		if(!Rudolphs_Presents.api.space(yootil.page.member.id()).left()){
 			new Rudolphs_Presents_Info_Dialog({
@@ -407,6 +407,8 @@ class Rudolphs_Presents_Button {
 					this.reset_item_dialog();
 					this.update_token_counter();
 
+					Rudolphs_Presents.api.sync(yootil.user.id());
+
 					new Rudolphs_Presents_Info_Dialog({
 
 						title: "Rudolph's Presents - Present Sent",
@@ -481,12 +483,12 @@ class Rudolphs_Presents_Button {
 		let $extra = $("<div class='rudolphs-presents-dialog-button-pane-extra'></div>");
 		let tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-		$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Presents Left:</strong> <span id="rudolphs-presents-presents-left-counter">' + parseInt(tokens) + '</span></span></button>').on("click", () => {
+		$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Present Tokens:</strong> <span id="rudolphs-presents-presents-left-counter">' + parseInt(tokens) + '</span></span></button>').on("click", () => {
 
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents Left",
-				msg: "This is the amount of presents you have left to send.<br /><br />When posting, you have chance to earn more.",
+				title: "Rudolph's Present Tokens",
+				msg: "This is the amount of presents you have left to send.<br /><br />When posting, you have chance to earn more tokens.",
 				width: 350,
 				height: 160
 
@@ -566,6 +568,10 @@ class Rudolphs_Presents_Profile_Box {
 					title = "Present from " + yootil.html_encode(presents[p].n, true) + " (ID# " + presents[p].u + ").";
 				}
 
+				if(yootil.page.member.id() == yootil.user.id() && Rudolphs_Presents.permissions.member_banned()){
+					title = "You can never open this present, you are banned.";
+				}
+
 				items_html += "<span title='" + title + "'" + data_attr + " data-present-id='" + presents[p].i + "' class='rudolphs-presents-profile-presents-present" + klass + "' style='background-image: url(\"" + image + "\");" + pos + "'></span>";
 			}
 
@@ -584,7 +590,7 @@ class Rudolphs_Presents_Profile_Box {
 				}
 			}
 
-			if(yootil.page.member.id() == yootil.user.id()){
+			if(yootil.page.member.id() == yootil.user.id() && !Rudolphs_Presents.permissions.member_banned()){
 				if(Rudolphs_Presents.date.get_time_left(true) <= 0){
 					$(".rudolphs-presents-profile-presents").find("span[data-present-not-opened]").on("click", function(){
 						let $span = $(this);
@@ -650,15 +656,163 @@ class Rudolphs_Presents_Profile_Box {
 
 }
 
+class Rudolphs_Presents_Mini_Profile_Stats {
+
+	constructor(){
+		this.using_custom = false;
+		this.add_stats_to_mini_profiles();
+		yootil.event.after_search(this.add_stats_to_mini_profiles, this);
+	}
+
+	add_stats_to_mini_profiles(){
+		let $mini_profiles = yootil.get.mini_profiles();
+
+		if(!$mini_profiles.length || $mini_profiles.find(".rudolphs-presents-user-stats").length){
+			return;
+		}
+
+		$mini_profiles.each((index, item) => {
+			let $mini_profile = $(item);
+			let $elem = $mini_profile.find(".rudolphs-presents-user-stats");
+			let $user_link = $mini_profile.find("a.user-link[href*='user/']");
+			let $info = $mini_profile.find(".info");
+
+			if(!$elem.length && !$info.length){
+				console.warn("Rudolph's Presents Mini Profile: No info element found.");
+				return;
+			}
+
+			if($user_link.length){
+				let user_id_match = $user_link.attr("href").match(/\/user\/(\d+)\/?/i);
+
+				if(!user_id_match || !parseInt(user_id_match[1], 10)){
+					console.warn("Rudolph's Presents Mini Profile: Could not match user link.");
+					return;
+				}
+
+				Rudolphs_Presents.api.refresh_all_data();
+
+				let user_id = parseInt(user_id_match[1], 10);
+				let using_info = false;
+
+				if($elem.length){
+					this.using_custom = true;
+				} else {
+					using_info = true;
+					$elem = $("<div class='rudolphs-presents-user-stats'></div>");
+				}
+
+				let sent = yootil.number_format(Rudolphs_Presents.api.get(user_id).total_presents_sent());
+				let received = yootil.number_format(Rudolphs_Presents.api.get(user_id).total_presents_received());
+				let tokens = yootil.number_format(Rudolphs_Presents.api.get(user_id).tokens());
+
+				let html = "";
+
+				html += "<span class='rudolphs-presents-stats-sent'>Presents Sent: <span>" + sent + "</span></span><br />";
+				html += "<span class='rudolphs-presents-stats-received'>Presents Received: <span>" + received + "</span></span><br />";
+				html += "<span class='rudolphs-presents-stats-tokens'>Present Tokens: <span>" + tokens + "</span></span><br />";
+
+				$elem.html(html);
+
+				if(using_info){
+					$info.prepend($elem);
+				}
+
+				$elem.show();
+			} else {
+				console.warn("Rudolph's Presents Mini Profile: Could not find user link.");
+			}
+
+		});
+	}
+
+};
+
+class Rudolphs_Presents_Post_Chance {
+
+	constructor(){
+		this._submitted = false;
+		this._tokens_added = 0;
+		this._hook = "";
+		this.init();
+	}
+
+	 init(){
+		this._hook = (yootil.location.posting_thread())? "thread_new" : ((yootil.location.thread())? "post_quick_reply" : "post_new");
+
+		 let $the_form = yootil.form.any_posting();
+
+		if($the_form.length){
+			$the_form.on("submit", () => {
+				this._submitted = true;
+				this.set_on();
+			});
+		} else {
+			console.warn("Rudolph's Presents Post: Could not find form.");
+		}
+	 }
+
+	set_on(){
+		if(!yootil.location.editing()){
+			let user_id = yootil.user.id();
+			let tokens_to_add = this.token_chance();
+
+			if(tokens_to_add){
+				if(this._submitted){
+					if(this._tokens_added){
+						Rudolphs_Presents.api.decrease(user_id).tokens(this._tokens_added);
+					}
+
+					this._tokens_added = tokens_to_add;
+
+					Rudolphs_Presents.api.increase(user_id).tokens(tokens_to_add);
+					yootil.key.set_on(Rudolphs_Presents.PLUGIN_KEY, Rudolphs_Presents.api.get(user_id).data(), user_id, this._hook);
+					Rudolphs_Presents.api.sync(yootil.user.id());
+				}
+			}
+		}
+	}
+
+	token_chance(){
+		let current_tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
+
+		if(current_tokens > 0){
+			return;
+		}
+
+		let rand = Math.random() * 100;
+		let tokens = 0;
+
+		if(rand < 0.1){
+			tokens = 10;
+		} else if(rand < 0.5){
+			tokens = 6;
+		} else if(rand < 3){
+			tokens = 4;
+		} else if(rand < 15){
+			tokens = 2;
+		} else if(rand < 40){
+			tokens = 1;
+		}
+
+		return tokens;
+	}
+
+}
+
 class Rudolphs_Presents {
 
 	static init(){
 		this.PLUGIN_ID = "pd_rudolphs_presents";
 		this.PLUGIN_KEY = "pixeldepth_rudolphs_presents";
-		this.images = {};
+
 		this._KEY_DATA = new Map();
 
+		this.images = {};
+		this.settings = {};
+
 		this.setup_data();
+		this.api.init();
 		this.setup();
 		this.date = new Rudolphs_Presents_Date();
 
@@ -667,15 +821,36 @@ class Rudolphs_Presents {
 
 	static ready(){
 		if(yootil.location.profile_home()){
-			if(yootil.user.logged_in() && yootil.user.id() != yootil.page.member.id()){
-				new Rudolphs_Presents_Button();
+			if(!this.permissions.member_banned() && this.permissions.group_can_send_presents()){
+				if(yootil.user.logged_in() && yootil.user.id() != yootil.page.member.id()){
+					new Rudolphs_Presents_Button();
+				}
 			}
 
 			new Rudolphs_Presents_Profile_Box();
 		}
 
-		if(yootil.user.logged_in()){
+		if(yootil.user.logged_in() && !this.permissions.member_banned()){
 			this.show_present_notification();
+		}
+
+		let location_check = (
+
+			yootil.location.search_results() ||
+			yootil.location.message_thread() ||
+			yootil.location.thread() ||
+			yootil.location.recent_posts()
+
+		);
+
+		if(location_check){
+			new Rudolphs_Presents_Mini_Profile_Stats();
+		}
+
+		if(!this.permissions.member_banned()){
+			if((yootil.location.posting() || yootil.location.thread())){
+				new Rudolphs_Presents_Post_Chance();
+			}
 		}
 	}
 
@@ -683,8 +858,7 @@ class Rudolphs_Presents {
 		let plugin = pb.plugin.get(this.PLUGIN_ID);
 
 		if(plugin && plugin.settings){
-			let plugin_settings = plugin.settings;
-
+			this.settings = plugin.settings;
 			this.images = plugin.images;
 		}
 	}
@@ -692,11 +866,11 @@ class Rudolphs_Presents {
 	static setup_data(){
 		let user_data = proboards.plugin.keys.data[this.PLUGIN_KEY];
 
-		for(let [key, value] of Object.entries(user_data)){
+		for(let key in user_data){
 			let id = parseInt(key, 10) || 0;
 
 			if(id && !this._KEY_DATA.has(id)){
-				value = (!value)? [{t: 10, s: 0}] : value;
+				let value = (!user_data[key])? [{t: 10, s: 0}] : user_data[key];
 
 				this._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, value));
 			}
@@ -711,7 +885,45 @@ class Rudolphs_Presents {
 
 }
 
+Rudolphs_Presents.permissions = class {
+
+	static member_banned(user_id = 0){
+		if(!Rudolphs_Presents.settings.banned_members.length){
+			return false;
+		}
+
+		user_id = user_id || yootil.user.id();
+
+		if($.inArrayLoose(user_id, Rudolphs_Presents.settings.banned_members) > -1){
+			return true;
+		}
+
+		return false;
+	}
+
+	static group_can_send_presents(){
+		if(!Rudolphs_Presents.settings.allowed_to_send.length){
+			return true;
+		}
+
+		let user_groups = yootil.user.group_ids();
+
+		for(let g = 0, l = user_groups.length; g < l; g ++){
+			if($.inArrayLoose(user_groups[g], Rudolphs_Presents.settings.allowed_to_send) > -1){
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+}
+
 Rudolphs_Presents.api = class {
+
+	static init(){
+		this._sync = new Rudolphs_Presents_Sync(this.get(yootil.user.id()).data(), Rudolphs_Presents_Sync_Handler);
+	}
 
 	static data(user_id = 0){
 		let id = parseInt(user_id, 10);
@@ -776,8 +988,15 @@ Rudolphs_Presents.api = class {
 				}
 
 				return false;
-			}
+			},
 
+			total_presents_sent(){
+				return user_data.get_total_sent();
+			},
+
+			total_presents_received(){
+				return Rudolphs_Presents.api.get(user_id).presents().length || 0;
+			}
 		};
 	}
 
@@ -794,6 +1013,10 @@ Rudolphs_Presents.api = class {
 				let data = [Rudolphs_Presents.api.get(user_id).data()[0]];
 
 				user_data._DATA = data.concat(presents);
+			},
+
+			data(data){
+				user_data._DATA = data;
 			}
 
 		};
@@ -882,6 +1105,23 @@ Rudolphs_Presents.api = class {
 				return false;
 			},
 
+			has_received_max_from(from_user_id){
+				let presents = Rudolphs_Presents.api.get(user_id).presents();
+				let counter = 0;
+
+				for(let p = 0; p < presents.length; p ++){
+					if(presents[p].u == from_user_id){
+						counter ++;
+					}
+				}
+
+				if(counter >= 3){
+					return true;
+				}
+
+				return false;
+			},
+
 			push(present = {}, callback = null){
 				return user_data.push(present, callback);
 			},
@@ -950,6 +1190,138 @@ Rudolphs_Presents.api = class {
 			}
 
 		}
+	}
+
+	static sync(user_id){
+		if(user_id != yootil.user.id()){
+			return;
+		}
+
+		let user_data = this.data(user_id);
+
+		if(!user_data){
+			return null;
+		}
+
+		this._sync.update(user_data.get_data());
+	}
+
+};
+
+class Rudolphs_Presents_Sync {
+
+	constructor(data = {}, handler = null){
+		if(!handler || typeof handler.change == "undefined"){
+			return;
+		}
+
+		this._trigger_caller = false;
+		this._handler = handler;
+		this._key = "rudolphs_presents_data_sync_" + yootil.user.id();
+
+		// Need to set the storage off the bat
+
+		yootil.storage.set(this._key, data, true, true);
+
+		// Delay adding event (IE issues yet again)
+
+		setTimeout(() => $(window).on("storage", (evt) => {
+			if(evt && evt.originalEvent && evt.originalEvent.key == this._key){
+
+				// IE fix
+
+				if(this._trigger_caller){
+					this._trigger_caller = false;
+					return;
+				}
+
+				let event = evt.originalEvent;
+				let old_data = event.oldValue;
+				let new_data = event.newValue;
+
+				// If old == new, don't do anything
+
+				if(old_data != new_data){
+					this._handler.change(JSON.parse(new_data), JSON.parse(old_data));
+				}
+			}
+		}), 100);
+	}
+
+	// For outside calls to trigger a manual update
+
+	update(data = {}){
+		this._trigger_caller = true;
+		yootil.storage.set(this._key, data, true, true);
+	}
+
+	get key(){
+		return this._key;
+	}
+
+};
+
+class Rudolphs_Presents_Sync_Handler {
+
+	static change(new_data, old_data){
+		this._new_data = new_data;
+		this._old_data = old_data;
+
+		Rudolphs_Presents.api.set(yootil.user.id()).data(this._new_data);
+
+		$(this.ready.bind(this));
+	}
+
+	static ready(){
+		this.update_mini_profile();
+	}
+
+	static update_mini_profile(){
+		let location_check = (
+
+			yootil.location.search_results() ||
+			yootil.location.message_thread() ||
+			yootil.location.thread() ||
+			yootil.location.recent_posts()
+
+		);
+
+		if(location_check){
+			let user_id = yootil.user.id();
+			let $mini_profiles = yootil.get.mini_profiles(user_id);
+
+			if($mini_profiles.length){
+				let $elems = $mini_profiles.find(".rudolphs-presents-user-stats");
+
+				if($elems.length){
+					let $sent = $elems.find(".rudolphs-presents-stats-sent span");
+
+					if($sent.length){
+						$sent.text(yootil.number_format(Rudolphs_Presents.api.get(user_id).total_presents_sent()))
+					}
+
+					let $received = $elems.find(".rudolphs-presents-stats-received span");
+
+					if($received.length){
+						$received.text(yootil.number_format(Rudolphs_Presents.api.get(user_id).total_presents_received()))
+					}
+
+					let $tokens = $elems.find(".rudolphs-presents-stats-tokens span");
+
+					if($tokens.length){
+						$tokens.text(yootil.number_format(Rudolphs_Presents.api.get(user_id).tokens()))
+					}
+				}
+			}
+		}
+	}
+
+	static get old_data(){
+		return this._old_data;
+	}
+
+	static get new_data(){
+		return this._new_data;
 	}
 
 };

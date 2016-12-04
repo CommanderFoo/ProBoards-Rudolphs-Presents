@@ -1,5 +1,9 @@
 Rudolphs_Presents.api = class {
 
+	static init(){
+		this._sync = new Rudolphs_Presents_Sync(this.get(yootil.user.id()).data(), Rudolphs_Presents_Sync_Handler);
+	}
+
 	static data(user_id = 0){
 		let id = parseInt(user_id, 10);
 
@@ -63,8 +67,15 @@ Rudolphs_Presents.api = class {
 				}
 
 				return false;
-			}
+			},
 
+			total_presents_sent(){
+				return user_data.get_total_sent();
+			},
+
+			total_presents_received(){
+				return Rudolphs_Presents.api.get(user_id).presents().length || 0;
+			}
 		};
 	}
 
@@ -81,6 +92,10 @@ Rudolphs_Presents.api = class {
 				let data = [Rudolphs_Presents.api.get(user_id).data()[0]];
 
 				user_data._DATA = data.concat(presents);
+			},
+
+			data(data){
+				user_data._DATA = data;
 			}
 
 		};
@@ -169,6 +184,23 @@ Rudolphs_Presents.api = class {
 				return false;
 			},
 
+			has_received_max_from(from_user_id){
+				let presents = Rudolphs_Presents.api.get(user_id).presents();
+				let counter = 0;
+
+				for(let p = 0; p < presents.length; p ++){
+					if(presents[p].u == from_user_id){
+						counter ++;
+					}
+				}
+
+				if(counter >= 3){
+					return true;
+				}
+
+				return false;
+			},
+
 			push(present = {}, callback = null){
 				return user_data.push(present, callback);
 			},
@@ -237,6 +269,20 @@ Rudolphs_Presents.api = class {
 			}
 
 		}
+	}
+
+	static sync(user_id){
+		if(user_id != yootil.user.id()){
+			return;
+		}
+
+		let user_data = this.data(user_id);
+
+		if(!user_data){
+			return null;
+		}
+
+		this._sync.update(user_data.get_data());
 	}
 
 };
