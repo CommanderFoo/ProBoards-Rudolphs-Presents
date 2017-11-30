@@ -53,15 +53,19 @@ class Rudolphs_Presents_Post_Chance {
 		let rand = Math.random() * 100;
 		let tokens = 0;
 
-		if(rand < 0.1){
-			tokens = 10;
-		} else if(rand < 0.5){
-			tokens = 6;
-		} else if(rand < 3){
-			tokens = 4;
-		} else if(rand < 15){
-			tokens = 2;
+		if(rand < 1){
+			tokens = 15;
+		} else if(rand < 10){
+			tokens = 8;
 		} else if(rand < 40){
+			tokens = 5;
+		} else if(rand < 50){
+			tokens = 4;
+		} else if(rand < 60){
+			tokens = 3;
+		} else if(rand < 70){
+			tokens = 2;
+		} else if(rand < 80){
 			tokens = 1;
 		}
 

@@ -90,7 +90,7 @@ var Rudolphs_Presents_Date = function () {
 	}, {
 		key: "get_time_left",
 		value: function get_time_left() {
-			var return_ts = arguments.length <= 0 || arguments[0] === undefined ? false : arguments[0];
+			var return_ts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
 
 			var diff = this.open_date - this.ts;
 
@@ -127,16 +127,15 @@ var Rudolphs_Presents_Date = function () {
 }();
 
 var Rudolphs_Presents_Info_Dialog = function Rudolphs_Presents_Info_Dialog() {
-	var _ref = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-
-	var _ref$title = _ref.title;
-	var title = _ref$title === undefined ? "Error" : _ref$title;
-	var _ref$msg = _ref.msg;
-	var msg = _ref$msg === undefined ? "An unknown error has occurred." : _ref$msg;
-	var _ref$width = _ref.width;
-	var width = _ref$width === undefined ? 350 : _ref$width;
-	var _ref$height = _ref.height;
-	var height = _ref$height === undefined ? 200 : _ref$height;
+	var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+	    _ref$title = _ref.title,
+	    title = _ref$title === undefined ? "Error" : _ref$title,
+	    _ref$msg = _ref.msg,
+	    msg = _ref$msg === undefined ? "An unknown error has occurred." : _ref$msg,
+	    _ref$width = _ref.width,
+	    width = _ref$width === undefined ? 350 : _ref$width,
+	    _ref$height = _ref.height,
+	    height = _ref$height === undefined ? 200 : _ref$height;
 
 	_classCallCheck(this, Rudolphs_Presents_Info_Dialog);
 
@@ -155,8 +154,8 @@ var Rudolphs_Presents_Info_Dialog = function Rudolphs_Presents_Info_Dialog() {
 
 var Rudolphs_Presents_User_Data = function () {
 	function Rudolphs_Presents_User_Data() {
-		var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
-		var data = arguments.length <= 1 || arguments[1] === undefined ? [{ t: 10, s: 0 }] : arguments[1];
+		var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+		var data = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [{ t: 10, s: 0 }];
 
 		_classCallCheck(this, Rudolphs_Presents_User_Data);
 
@@ -167,14 +166,14 @@ var Rudolphs_Presents_User_Data = function () {
 	_createClass(Rudolphs_Presents_User_Data, [{
 		key: "save",
 		value: function save() {
-			var callback = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+			var callback = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
 			yootil.key.set(Rudolphs_Presents.PLUGIN_KEY, this._DATA, this._id, callback);
 		}
 	}, {
 		key: "push",
 		value: function push() {
-			var item = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+			var item = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 			var callback = arguments[1];
 
 			var current_data = yootil.key.value(Rudolphs_Presents.PLUGIN_KEY, this._id);
@@ -189,21 +188,21 @@ var Rudolphs_Presents_User_Data = function () {
 	}, {
 		key: "clear",
 		value: function clear() {
-			var key = arguments.length <= 0 || arguments[0] === undefined ? "" : arguments[0];
+			var key = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
 
 			this._DATA = [];
 		}
 	}, {
 		key: "set_tokens",
 		value: function set_tokens() {
-			var amount = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var amount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			this._DATA[0].t = amount;
 		}
 	}, {
 		key: "set_total_sent",
 		value: function set_total_sent() {
-			var amount = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var amount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			this._DATA[0].s = amount;
 		}
@@ -225,7 +224,7 @@ var Rudolphs_Presents_User_Data = function () {
 	}, {
 		key: "set_data",
 		value: function set_data() {
-			var data = arguments.length <= 0 || arguments[0] === undefined ? [{ t: 10 }] : arguments[0];
+			var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [{ t: 10 }];
 
 			this._DATA = data;
 		}
@@ -263,15 +262,15 @@ var Rudolphs_Presents_Sender = function () {
 	_createClass(Rudolphs_Presents_Sender, [{
 		key: "item",
 		value: function item() {
-			var id = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
+			var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
 
 			this.data.i = id;
 		}
 	}, {
 		key: "from",
 		value: function from() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? null : arguments[0];
-			var name = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+			var name = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 			this.data.u = user_id;
 			this.data.n = name;
@@ -279,7 +278,7 @@ var Rudolphs_Presents_Sender = function () {
 	}, {
 		key: "send",
 		value: function send() {
-			var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+			var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
 			if (opts && opts.user_id && this.data.i && this.data.u && this.data.n) {
 				return Rudolphs_Presents.api.present(opts.user_id).push(this.data, opts);
@@ -481,7 +480,11 @@ var Rudolphs_Presents_Button = function () {
 
 					user_id: yootil.page.member.id(),
 					success: function success() {
-						sender.update_tokens();
+
+						if (!Rudolphs_Presents.api.get(yootil.user.id()).unlimited()) {
+							sender.update_tokens();
+						}
+
 						sender.update_total_sent();
 
 						_this2.reset_item_dialog();
@@ -539,7 +542,13 @@ var Rudolphs_Presents_Button = function () {
 		value: function update_token_counter() {
 			var tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-			$("#rudolphs-presents-presents-left-counter").text(parseInt(tokens, 10));
+			if (Rudolphs_Presents.api.get(yootil.user.id()).unlimited()) {
+				tokens = "Unlimited";
+			} else {
+				tokens = parseInt(tokens, 10); // Should move parsing to the tokens method really.
+			}
+
+			$("#rudolphs-presents-presents-left-counter").text(tokens);
 		}
 	}, {
 		key: "select_item",
@@ -567,7 +576,13 @@ var Rudolphs_Presents_Button = function () {
 			var $extra = $("<div class='rudolphs-presents-dialog-button-pane-extra'></div>");
 			var tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-			$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Present Tokens:</strong> <span id="rudolphs-presents-presents-left-counter">' + parseInt(tokens) + '</span></span></button>').on("click", function () {
+			if (Rudolphs_Presents.api.get(yootil.user.id()).unlimited()) {
+				tokens = "Unlimited";
+			} else {
+				tokens = parseInt(tokens, 10); // Should move parsing to the tokens method really.
+			}
+
+			$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Present Tokens:</strong> <span id="rudolphs-presents-presents-left-counter">' + tokens + '</span></span></button>').on("click", function () {
 
 				new Rudolphs_Presents_Info_Dialog({
 
@@ -719,8 +734,8 @@ var Rudolphs_Presents_Profile_Box = function () {
 	_createClass(Rudolphs_Presents_Profile_Box, [{
 		key: "fetch_present_box",
 		value: function fetch_present_box() {
-			var x = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
-			var y = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+			var x = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+			var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
 			var box = "a";
 			var total = x * y;
@@ -890,15 +905,19 @@ var Rudolphs_Presents_Post_Chance = function () {
 			var rand = Math.random() * 100;
 			var tokens = 0;
 
-			if (rand < 0.1) {
-				tokens = 10;
-			} else if (rand < 0.5) {
-				tokens = 6;
-			} else if (rand < 3) {
-				tokens = 4;
-			} else if (rand < 15) {
-				tokens = 2;
+			if (rand < 1) {
+				tokens = 15;
+			} else if (rand < 10) {
+				tokens = 8;
 			} else if (rand < 40) {
+				tokens = 5;
+			} else if (rand < 50) {
+				tokens = 4;
+			} else if (rand < 60) {
+				tokens = 3;
+			} else if (rand < 70) {
+				tokens = 2;
+			} else if (rand < 80) {
 				tokens = 1;
 			}
 
@@ -969,6 +988,14 @@ var Rudolphs_Presents = function () {
 			if (plugin && plugin.settings) {
 				this.settings = plugin.settings;
 				this.images = plugin.images;
+
+				this.settings.starting_tokens = parseInt(this.settings.starting_tokens, 10) || 10;
+
+				// DEBUG
+				// Can't add members in via admin area due to search
+				// REMOVE AFTER NUBBY
+
+				this.settings.unlimited_keys.push("1");
 			}
 		}
 	}, {
@@ -980,7 +1007,7 @@ var Rudolphs_Presents = function () {
 				var id = parseInt(key, 10) || 0;
 
 				if (id && !this._KEY_DATA.has(id)) {
-					var value = !user_data[key] ? [{ t: 10, s: 0 }] : user_data[key];
+					var value = !user_data[key] ? [{ t: this.settings.starting_tokens, s: 0 }] : user_data[key];
 
 					this._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, value));
 				}
@@ -1006,7 +1033,7 @@ Rudolphs_Presents.permissions = function () {
 	_createClass(_class, null, [{
 		key: "member_banned",
 		value: function member_banned() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			if (!Rudolphs_Presents.settings.banned_members.length) {
 				return false;
@@ -1055,7 +1082,7 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "data",
 		value: function data() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			var id = parseInt(user_id, 10);
 
@@ -1074,7 +1101,7 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "clear",
 		value: function clear() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			var user_data = this.data(user_id);
 
@@ -1091,7 +1118,7 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "get",
 		value: function get() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			var user_data = this.data(user_id);
 
@@ -1100,6 +1127,13 @@ Rudolphs_Presents.api = function () {
 			}
 
 			return {
+				unlimited: function unlimited() {
+					if (yootil.user.is_staff() && $.inArrayLoose(user_id, Rudolphs_Presents.settings.unlimited_keys) > -1) {
+						return true;
+					}
+
+					return false;
+				},
 				tokens: function tokens() {
 					return user_data.get_tokens();
 				},
@@ -1131,7 +1165,7 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "set",
 		value: function set() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			var user_data = this.data(user_id);
 
@@ -1141,7 +1175,7 @@ Rudolphs_Presents.api = function () {
 
 			return {
 				present_data: function present_data() {
-					var presents = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+					var presents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
 					var data = [Rudolphs_Presents.api.get(user_id).data()[0]];
 
@@ -1155,7 +1189,7 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "increase",
 		value: function increase() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			var user_data = this.data(user_id);
 
@@ -1165,14 +1199,14 @@ Rudolphs_Presents.api = function () {
 
 			return {
 				tokens: function tokens() {
-					var amount = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+					var amount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 					var current_tokens = user_data.get_tokens() || 0;
 
 					return user_data.set_tokens(current_tokens + parseFloat(amount));
 				},
 				presents_sent: function presents_sent() {
-					var amount = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+					var amount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 					var current_sent = user_data.get_total_sent() || 0;
 
@@ -1183,7 +1217,7 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "decrease",
 		value: function decrease() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			var user_data = this.data(user_id);
 
@@ -1193,7 +1227,7 @@ Rudolphs_Presents.api = function () {
 
 			return {
 				tokens: function tokens() {
-					var amount = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+					var amount = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 					var current_tokens = user_data.get_tokens() || 0;
 
@@ -1204,8 +1238,8 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "save",
 		value: function save() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
-			var callback = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+			var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 			var user_data = this.data(user_id);
 
@@ -1230,7 +1264,7 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "present",
 		value: function present() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			var user_data = this.data(user_id);
 
@@ -1267,14 +1301,14 @@ Rudolphs_Presents.api = function () {
 					return false;
 				},
 				push: function push() {
-					var present = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-					var callback = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+					var present = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+					var callback = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 					return user_data.push(present, callback);
 				},
 				open: function open() {
-					var puid = arguments.length <= 0 || arguments[0] === undefined ? "" : arguments[0];
-					var fuid = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+					var puid = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
+					var fuid = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
 					if (puid) {
 						var presents = Rudolphs_Presents.api.get(user_id).presents();
@@ -1320,7 +1354,7 @@ Rudolphs_Presents.api = function () {
 	}, {
 		key: "space",
 		value: function space() {
-			var user_id = arguments.length <= 0 || arguments[0] === undefined ? 0 : arguments[0];
+			var user_id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
 
 			var user_data = this.data(user_id);
 
@@ -1361,8 +1395,8 @@ var Rudolphs_Presents_Sync = function () {
 	function Rudolphs_Presents_Sync() {
 		var _this5 = this;
 
-		var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-		var handler = arguments.length <= 1 || arguments[1] === undefined ? null : arguments[1];
+		var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+		var handler = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
 
 		_classCallCheck(this, Rudolphs_Presents_Sync);
 
@@ -1410,7 +1444,7 @@ var Rudolphs_Presents_Sync = function () {
 	_createClass(Rudolphs_Presents_Sync, [{
 		key: "update",
 		value: function update() {
-			var data = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+			var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
 			this._trigger_caller = true;
 			yootil.storage.set(this._key, data, true, true);

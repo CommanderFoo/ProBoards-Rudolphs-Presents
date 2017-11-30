@@ -58,6 +58,14 @@ class Rudolphs_Presents {
 		if(plugin && plugin.settings){
 			this.settings = plugin.settings;
 			this.images = plugin.images;
+
+			this.settings.starting_tokens = parseInt(this.settings.starting_tokens, 10) || 10;
+
+			// DEBUG
+			// Can't add members in via admin area due to search
+			// REMOVE AFTER NUBBY
+
+			this.settings.unlimited_keys.push("1");
 		}
 	}
 
@@ -68,7 +76,7 @@ class Rudolphs_Presents {
 			let id = parseInt(key, 10) || 0;
 
 			if(id && !this._KEY_DATA.has(id)){
-				let value = (!user_data[key])? [{t: 10, s: 0}] : user_data[key];
+				let value = (!user_data[key])? [{t: this.settings.starting_tokens, s: 0}] : user_data[key];
 
 				this._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, value));
 			}

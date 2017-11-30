@@ -45,6 +45,14 @@ Rudolphs_Presents.api = class {
 
 		return {
 
+			unlimited(){
+				if(yootil.user.is_staff() && $.inArrayLoose(user_id, Rudolphs_Presents.settings.unlimited_keys) > -1){
+					return true;
+				}
+
+				return false;
+			},
+
 			tokens(){
 				return user_data.get_tokens();
 			},

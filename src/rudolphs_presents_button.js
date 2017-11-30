@@ -150,7 +150,11 @@ class Rudolphs_Presents_Button {
 
 				user_id: yootil.page.member.id(),
 				success: () => {
-					sender.update_tokens();
+
+					if(!Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
+						sender.update_tokens();
+					}
+
 					sender.update_total_sent();
 
 					this.reset_item_dialog();
@@ -206,7 +210,13 @@ class Rudolphs_Presents_Button {
 	update_token_counter(){
 		let tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-		$("#rudolphs-presents-presents-left-counter").text(parseInt(tokens, 10));
+		if(Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
+			tokens = "Unlimited";
+		} else {
+			tokens = parseInt(tokens, 10); // Should move parsing to the tokens method really.
+		}
+
+		$("#rudolphs-presents-presents-left-counter").text(tokens);
 	}
 
 	select_item(evt){
@@ -232,7 +242,13 @@ class Rudolphs_Presents_Button {
 		let $extra = $("<div class='rudolphs-presents-dialog-button-pane-extra'></div>");
 		let tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-		$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Present Tokens:</strong> <span id="rudolphs-presents-presents-left-counter">' + parseInt(tokens) + '</span></span></button>').on("click", () => {
+		if(Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
+			tokens = "Unlimited";
+		} else {
+			tokens = parseInt(tokens, 10); // Should move parsing to the tokens method really.
+		}
+
+		$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Present Tokens:</strong> <span id="rudolphs-presents-presents-left-counter">' + tokens + '</span></span></button>').on("click", () => {
 
 			new Rudolphs_Presents_Info_Dialog({
 

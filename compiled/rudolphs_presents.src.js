@@ -401,7 +401,11 @@ class Rudolphs_Presents_Button {
 
 				user_id: yootil.page.member.id(),
 				success: () => {
-					sender.update_tokens();
+
+					if(!Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
+						sender.update_tokens();
+					}
+
 					sender.update_total_sent();
 
 					this.reset_item_dialog();
@@ -457,7 +461,13 @@ class Rudolphs_Presents_Button {
 	update_token_counter(){
 		let tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-		$("#rudolphs-presents-presents-left-counter").text(parseInt(tokens, 10));
+		if(Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
+			tokens = "Unlimited";
+		} else {
+			tokens = parseInt(tokens, 10); // Should move parsing to the tokens method really.
+		}
+
+		$("#rudolphs-presents-presents-left-counter").text(tokens);
 	}
 
 	select_item(evt){
@@ -483,7 +493,13 @@ class Rudolphs_Presents_Button {
 		let $extra = $("<div class='rudolphs-presents-dialog-button-pane-extra'></div>");
 		let tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-		$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Present Tokens:</strong> <span id="rudolphs-presents-presents-left-counter">' + parseInt(tokens) + '</span></span></button>').on("click", () => {
+		if(Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
+			tokens = "Unlimited";
+		} else {
+			tokens = parseInt(tokens, 10); // Should move parsing to the tokens method really.
+		}
+
+		$extra.append('<button type="button" id="rudolphs-presents-presents-left-button" class="ui-button"><span class="ui-button-text"><strong>Present Tokens:</strong> <span id="rudolphs-presents-presents-left-counter">' + tokens + '</span></span></button>').on("click", () => {
 
 			new Rudolphs_Presents_Info_Dialog({
 
@@ -783,15 +799,19 @@ class Rudolphs_Presents_Post_Chance {
 		let rand = Math.random() * 100;
 		let tokens = 0;
 
-		if(rand < 0.1){
-			tokens = 10;
-		} else if(rand < 0.5){
-			tokens = 6;
-		} else if(rand < 3){
-			tokens = 4;
-		} else if(rand < 15){
-			tokens = 2;
+		if(rand < 1){
+			tokens = 15;
+		} else if(rand < 10){
+			tokens = 8;
 		} else if(rand < 40){
+			tokens = 5;
+		} else if(rand < 50){
+			tokens = 4;
+		} else if(rand < 60){
+			tokens = 3;
+		} else if(rand < 70){
+			tokens = 2;
+		} else if(rand < 80){
 			tokens = 1;
 		}
 
@@ -860,6 +880,14 @@ class Rudolphs_Presents {
 		if(plugin && plugin.settings){
 			this.settings = plugin.settings;
 			this.images = plugin.images;
+
+			this.settings.starting_tokens = parseInt(this.settings.starting_tokens, 10) || 10;
+
+			// DEBUG
+			// Can't add members in via admin area due to search
+			// REMOVE AFTER NUBBY
+
+			this.settings.unlimited_keys.push("1");
 		}
 	}
 
@@ -870,7 +898,7 @@ class Rudolphs_Presents {
 			let id = parseInt(key, 10) || 0;
 
 			if(id && !this._KEY_DATA.has(id)){
-				let value = (!user_data[key])? [{t: 10, s: 0}] : user_data[key];
+				let value = (!user_data[key])? [{t: this.settings.starting_tokens, s: 0}] : user_data[key];
 
 				this._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, value));
 			}
@@ -965,6 +993,14 @@ Rudolphs_Presents.api = class {
 		}
 
 		return {
+
+			unlimited(){
+				if(yootil.user.is_staff() && $.inArrayLoose(user_id, Rudolphs_Presents.settings.unlimited_keys) > -1){
+					return true;
+				}
+
+				return false;
+			},
 
 			tokens(){
 				return user_data.get_tokens();
