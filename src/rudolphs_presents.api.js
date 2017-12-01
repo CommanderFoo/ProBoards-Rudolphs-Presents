@@ -9,7 +9,7 @@ Rudolphs_Presents.api = class {
 
 		if(id > 0){
 			if(!Rudolphs_Presents._KEY_DATA.has(id)){
-				Rudolphs_Presents._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, [{t: 10, s: 0}]));
+				Rudolphs_Presents._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, [{t: Rudolphs_Presents.settings.starting_tokens, s: 0}]));
 			}
 
 			return Rudolphs_Presents._KEY_DATA.get(id);
@@ -121,13 +121,13 @@ Rudolphs_Presents.api = class {
 			tokens(amount = 0){
 				let current_tokens = user_data.get_tokens() || 0;
 
-				return user_data.set_tokens(current_tokens + parseFloat(amount));
+				return user_data.set_tokens(current_tokens + parseInt(amount, 10));
 			},
 
 			presents_sent(amount = 0){
 				let current_sent = user_data.get_total_sent() || 0;
 
-				return user_data.set_total_sent(current_sent + parseFloat(amount));
+				return user_data.set_total_sent(current_sent + parseInt(amount, 10));
 			}
 
 		};
@@ -144,8 +144,15 @@ Rudolphs_Presents.api = class {
 
 			tokens(amount = 0){
 				let current_tokens = user_data.get_tokens() || 0;
+				let new_amount = current_tokens - parseInt(amount, 10);
 
-				return user_data.set_tokens(current_tokens - parseFloat(amount));
+				// Saftey for negative (should never be possible)
+
+				if(new_amount < 0){
+					new_amount = 0;
+				}
+
+				return user_data.set_tokens(new_amount);
 			}
 
 		};

@@ -276,7 +276,7 @@ class Rudolphs_Presents_Button {
 
 		let tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-		if(tokens <= 0){
+		if(tokens <= 0 && !Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
 			new Rudolphs_Presents_Info_Dialog({
 
 				title: "Rudolph's Presents - No Present Tokens",
@@ -831,9 +831,11 @@ class Rudolphs_Presents {
 		this.images = {};
 		this.settings = {};
 
-		this.setup_data();
-		this.api.init();
 		this.setup();
+		this.setup_data();
+
+		this.api.init();
+
 		this.date = new Rudolphs_Presents_Date();
 
 		$(this.ready.bind(this));
@@ -882,12 +884,6 @@ class Rudolphs_Presents {
 			this.images = plugin.images;
 
 			this.settings.starting_tokens = parseInt(this.settings.starting_tokens, 10) || 10;
-
-			// DEBUG
-			// Can't add members in via admin area due to search
-			// REMOVE AFTER NUBBY
-
-			this.settings.unlimited_keys.push("1");
 		}
 	}
 
@@ -958,7 +954,7 @@ Rudolphs_Presents.api = class {
 
 		if(id > 0){
 			if(!Rudolphs_Presents._KEY_DATA.has(id)){
-				Rudolphs_Presents._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, [{t: 10, s: 0}]));
+				Rudolphs_Presents._KEY_DATA.set(id, new Rudolphs_Presents_User_Data(id, [{t: Rudolphs_Presents.settings.starting_tokens, s: 0}]));
 			}
 
 			return Rudolphs_Presents._KEY_DATA.get(id);
@@ -1070,13 +1066,13 @@ Rudolphs_Presents.api = class {
 			tokens(amount = 0){
 				let current_tokens = user_data.get_tokens() || 0;
 
-				return user_data.set_tokens(current_tokens + parseFloat(amount));
+				return user_data.set_tokens(current_tokens + parseInt(amount, 10));
 			},
 
 			presents_sent(amount = 0){
 				let current_sent = user_data.get_total_sent() || 0;
 
-				return user_data.set_total_sent(current_sent + parseFloat(amount));
+				return user_data.set_total_sent(current_sent + parseInt(amount, 10));
 			}
 
 		};
@@ -1093,8 +1089,15 @@ Rudolphs_Presents.api = class {
 
 			tokens(amount = 0){
 				let current_tokens = user_data.get_tokens() || 0;
+				let new_amount = current_tokens - parseInt(amount, 10);
 
-				return user_data.set_tokens(current_tokens - parseFloat(amount));
+				// Saftey for negative (should never be possible)
+
+				if(new_amount < 0){
+					new_amount = 0;
+				}
+
+				return user_data.set_tokens(new_amount);
 			}
 
 		};

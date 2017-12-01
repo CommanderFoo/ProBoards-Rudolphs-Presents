@@ -25,7 +25,7 @@ class Rudolphs_Presents_Button {
 
 		let tokens = Rudolphs_Presents.api.get(yootil.user.id()).tokens();
 
-		if(tokens <= 0){
+		if(tokens <= 0 && !Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
 			new Rudolphs_Presents_Info_Dialog({
 
 				title: "Rudolph's Presents - No Present Tokens",

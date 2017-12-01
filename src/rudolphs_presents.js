@@ -9,9 +9,11 @@ class Rudolphs_Presents {
 		this.images = {};
 		this.settings = {};
 
-		this.setup_data();
-		this.api.init();
 		this.setup();
+		this.setup_data();
+
+		this.api.init();
+
 		this.date = new Rudolphs_Presents_Date();
 
 		$(this.ready.bind(this));
@@ -60,12 +62,6 @@ class Rudolphs_Presents {
 			this.images = plugin.images;
 
 			this.settings.starting_tokens = parseInt(this.settings.starting_tokens, 10) || 10;
-
-			// DEBUG
-			// Can't add members in via admin area due to search
-			// REMOVE AFTER NUBBY
-
-			this.settings.unlimited_keys.push("1");
 		}
 	}
 
