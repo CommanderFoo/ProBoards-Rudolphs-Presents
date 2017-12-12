@@ -2,7 +2,7 @@
 * @license
 * The MIT License (MIT)
 *
-* Copyright (c) 2016 pixeldepth.net - http://support.proboards.com/user/2671
+* Copyright (c) 2017 pixeldepth.net - http://support.proboards.com/user/2671
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -867,8 +867,6 @@ var Rudolphs_Presents_Post_Chance = function () {
 					_this4._submitted = true;
 					_this4.set_on();
 				});
-			} else {
-				console.warn("Rudolph's Presents Post: Could not find form.");
 			}
 		}
 	}, {
@@ -1073,7 +1071,9 @@ Rudolphs_Presents.api = function () {
 	_createClass(_class2, null, [{
 		key: "init",
 		value: function init() {
-			this._sync = new Rudolphs_Presents_Sync(this.get(yootil.user.id()).data(), Rudolphs_Presents_Sync_Handler);
+			var data = yootil.user.logged_in() ? this.get(yootil.user.id()).data() : {};
+
+			this._sync = new Rudolphs_Presents_Sync(data, Rudolphs_Presents_Sync_Handler);
 		}
 	}, {
 		key: "data",
@@ -1089,8 +1089,6 @@ Rudolphs_Presents.api = function () {
 
 				return Rudolphs_Presents._KEY_DATA.get(id);
 			}
-
-			console.warn("Rudolph's Presents API: User ID not valid");
 
 			return null;
 		}

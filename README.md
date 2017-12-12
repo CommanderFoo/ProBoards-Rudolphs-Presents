@@ -1,7 +1,4 @@
-##Rudolph's Presents 1.0.0 WIP
-
-This is a WIP, there are still features not complete and debug code in place.
-
+##Rudolph's Presents 1.1.1
 
 This is a Christmas plugin for ProBoards that allow forum members to send presents to members that can't be opened until Christmas.
 

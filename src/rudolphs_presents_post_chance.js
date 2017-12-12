@@ -17,8 +17,6 @@ class Rudolphs_Presents_Post_Chance {
 				this._submitted = true;
 				this.set_on();
 			});
-		} else {
-			console.warn("Rudolph's Presents Post: Could not find form.");
 		}
 	 }
 

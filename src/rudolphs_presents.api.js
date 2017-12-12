@@ -1,7 +1,9 @@
 Rudolphs_Presents.api = class {
 
 	static init(){
-		this._sync = new Rudolphs_Presents_Sync(this.get(yootil.user.id()).data(), Rudolphs_Presents_Sync_Handler);
+		let data = (yootil.user.logged_in())? this.get(yootil.user.id()).data() : {};
+
+		this._sync = new Rudolphs_Presents_Sync(data, Rudolphs_Presents_Sync_Handler);
 	}
 
 	static data(user_id = 0){
@@ -14,8 +16,6 @@ Rudolphs_Presents.api = class {
 
 			return Rudolphs_Presents._KEY_DATA.get(id);
 		}
-
-		console.warn("Rudolph's Presents API: User ID not valid");
 
 		return null;
 	}
