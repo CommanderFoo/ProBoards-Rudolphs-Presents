@@ -2,7 +2,7 @@
 * @license
 * The MIT License (MIT)
 *
-* Copyright (c) 2017 pixeldepth.net - http://support.proboards.com/user/2671
+* Copyright (c) 2018 pixeldepth.net - http://support.proboards.com/user/2671
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -665,7 +665,7 @@ var Rudolphs_Presents_Profile_Box = function () {
 				} else {
 					image = Rudolphs_Presents.images.items;
 					pos = " background-position: -" + x_offset + "px -" + y_offset + "px;";
-					title = "Present from " + yootil.html_encode(presents[p].n, true) + " (ID# " + presents[p].u + ").";
+					title = "Present from " + pb.text.escape_html(presents[p].n) + " (ID# " + parseInt(presents[p].u, 10) + ").";
 				}
 
 				if (yootil.page.member.id() == yootil.user.id() && Rudolphs_Presents.permissions.member_banned()) {

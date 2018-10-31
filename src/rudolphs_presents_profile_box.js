@@ -62,7 +62,7 @@ class Rudolphs_Presents_Profile_Box {
 				} else {
 					image = Rudolphs_Presents.images.items;
 					pos = " background-position: -" + x_offset + "px -" + y_offset + "px;";
-					title = "Present from " + yootil.html_encode(presents[p].n, true) + " (ID# " + presents[p].u + ").";
+					title = "Present from " + pb.text.escape_html(presents[p].n) + " (ID# " + parseInt(presents[p].u, 10) + ").";
 				}
 
 				if(yootil.page.member.id() == yootil.user.id() && Rudolphs_Presents.permissions.member_banned()){
