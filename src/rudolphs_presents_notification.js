@@ -4,7 +4,7 @@ class Rudolphs_Presents_Notification {
 		let imgs = ["a", "b", "c", "d", "e", "f", "g", "h"];
 		let image = Rudolphs_Presents.images[imgs[~~ (Math.random() * imgs.length)]];
 
-		let $notification = $("<div title='You have received a present' class='rudolphs-presents-notification' style='background-image: url(\""  + image +"\");'></div>");
+		let $notification = $("<div title='You have received a " + Rudolphs_Presents.get_text("present", true) + "' class='rudolphs-presents-notification' style='background-image: url(\""  + image +"\");'></div>");
 
 		$notification.fadeIn(1000, () => $notification.addClass("rudolphs-presents-notification-rotate"));
 		$notification.on("click", this.mark_all_seen);

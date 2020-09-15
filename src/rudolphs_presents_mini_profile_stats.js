@@ -50,9 +50,9 @@ class Rudolphs_Presents_Mini_Profile_Stats {
 
 				let html = "";
 
-				html += "<span class='rudolphs-presents-stats-sent'>Presents Sent: <span>" + sent + "</span></span><br />";
-				html += "<span class='rudolphs-presents-stats-received'>Presents Received: <span>" + received + "</span></span><br />";
-				html += "<span class='rudolphs-presents-stats-tokens'>Present Tokens: <span>" + tokens + "</span></span><br />";
+				html += "<span class='rudolphs-presents-stats-sent'>" + Rudolphs_Presents.get_text("present") + "s Sent: <span>" + sent + "</span></span><br />";
+				html += "<span class='rudolphs-presents-stats-received'>" + Rudolphs_Presents.get_text("present") + "s Received: <span>" + received + "</span></span><br />";
+				html += "<span class='rudolphs-presents-stats-tokens'>" + Rudolphs_Presents.get_text("present") + " " + Rudolphs_Presents.get_text("token") + "s: <span>" + tokens + "</span></span><br />";
 
 				$elem.html(html);
 

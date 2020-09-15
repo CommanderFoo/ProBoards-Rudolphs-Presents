@@ -47,12 +47,12 @@ class Rudolphs_Presents_Profile_Box {
 
 				if(Rudolphs_Presents.date.get_time_left(true) > 0 || !presents[p].o){
 					if(yootil.page.member.id() != yootil.user.id()){
-						title = "Hey! That is not your present, you can not open that.";
+						title = "Hey! That is not your " + Rudolphs_Presents.get_text("present", true) + ", you can not open that.";
 					} else {
 						if(Rudolphs_Presents.date.get_time_left(true) <= 0){
-							title = "Present can be opened.";
+							title = Rudolphs_Presents.get_text("present") + " can be opened.";
 						} else {
-							title = "Present can be opened in " + Rudolphs_Presents.date.get_time_left().full_string + ".";
+							title = Rudolphs_Presents.get_text("present") + " can be opened in " + Rudolphs_Presents.date.get_time_left().full_string + ".";
 						}
 					}
 
@@ -62,11 +62,11 @@ class Rudolphs_Presents_Profile_Box {
 				} else {
 					image = Rudolphs_Presents.images.items;
 					pos = " background-position: -" + x_offset + "px -" + y_offset + "px;";
-					title = "Present from " + pb.text.escape_html(presents[p].n) + " (ID# " + parseInt(presents[p].u, 10) + ").";
+					title = Rudolphs_Presents.get_text("present") + " from " + pb.text.escape_html(presents[p].n) + " (ID# " + parseInt(presents[p].u, 10) + ").";
 				}
 
 				if(yootil.page.member.id() == yootil.user.id() && Rudolphs_Presents.permissions.member_banned()){
-					title = "You can never open this present, you are banned.";
+					title = "You can never open this " + Rudolphs_Presents.get_text("present", true) + ", you are banned.";
 				}
 
 				items_html += "<span title='" + title + "'" + data_attr + " data-present-id='" + presents[p].i + "' class='rudolphs-presents-profile-presents-present" + klass + "' style='background-image: url(\"" + image + "\");" + pos + "'></span>";
@@ -118,7 +118,7 @@ class Rudolphs_Presents_Profile_Box {
 						let present = Rudolphs_Presents.api.present(yootil.user.id()).open($span.attr("data-present-id"), uid);
 
 						if(present){
-							$span.attr("title", "Present from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ").");
+							$span.attr("title", Rudolphs_Presents.get_text("present") + " from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ").");
 						} else {
 							$span.removeAttr("title");
 						}

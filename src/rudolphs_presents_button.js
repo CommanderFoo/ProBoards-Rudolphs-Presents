@@ -7,7 +7,7 @@ class Rudolphs_Presents_Button {
 	}
 
 	create_button(){
-		let $button = $("<a class='button' id='rudolphs-presents-button' href='#' role='button'>Rudolph's Presents</a>");
+		let $button = $("<a class='button' id='rudolphs-presents-button' href='#' role='button'>" + Rudolphs_Presents.get_text("profile_button") + "</a>");
 		let $conversation_button = $(".controls a.button[href^='/conversation/new/']");
 
 		if($conversation_button.length){
@@ -28,8 +28,8 @@ class Rudolphs_Presents_Button {
 		if(tokens <= 0 && !Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - No Present Tokens",
-				msg: "You currently have no more present tokens, however, you have a chance to earn more when you post.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - No " + Rudolphs_Presents.get_text("token") + "s",
+				msg: "You currently have no more " + Rudolphs_Presents.get_text("token", true) + "s, however, you have a chance to earn more when you post.",
 				width: 350,
 				height: 150
 
@@ -43,8 +43,8 @@ class Rudolphs_Presents_Button {
 		if(Rudolphs_Presents.api.present(yootil.page.member.id()).has_received_max_from(yootil.user.id())){
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - Already Sent",
-				msg: "You have already sent the maximum amount of presents to this user, you can't send anymore.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - Maximum Sent",
+				msg: "You have already sent the maximum amount of " + Rudolphs_Presents.get_text("present", true) + "s to this user, you can't send anymore.",
 				width: 350,
 				height: 150
 
@@ -56,8 +56,8 @@ class Rudolphs_Presents_Button {
 		if(!Rudolphs_Presents.api.space(yootil.page.member.id()).left()){
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - Error",
-				msg: "This user can't receive anymore presents, their inventory is completely full.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - Error",
+				msg: "This user can't receive anymore " + Rudolphs_Presents.get_text("present", true) + "s, their inventory is full.",
 				width: 350,
 				height: 150
 
@@ -73,7 +73,7 @@ class Rudolphs_Presents_Button {
 
 				//(529)
 
-				title: "Rudolph's Presents",
+				title: Rudolphs_Presents.get_text("dialog_title"),
 				resizable: true,
 				draggable: true,
 				modal: true,
@@ -85,7 +85,7 @@ class Rudolphs_Presents_Button {
 
 					{
 
-						text: "Send Present",
+						text: "Send",
 						click: this.send_present.bind(this),
 						disabled: true,
 						class: "rudolphs-presents-dialog-send-button",
@@ -164,8 +164,8 @@ class Rudolphs_Presents_Button {
 
 					new Rudolphs_Presents_Info_Dialog({
 
-						title: "Rudolph's Presents - Present Sent",
-						msg: "Your present was successfully sent.",
+						title: Rudolphs_Presents.get_text("dialog_title") + " - " + Rudolphs_Presents.get_text("present") + " Sent",
+						msg: "Your " + Rudolphs_Presents.get_text("present", true) + " was successfully sent.",
 						width: 350,
 						height: 150
 
@@ -178,8 +178,8 @@ class Rudolphs_Presents_Button {
 
 					new Rudolphs_Presents_Info_Dialog({
 
-						title: "Rudolph's Presents - Error",
-						msg: "For some reason we could not deliver this present.<br /><br />Error: " + yootil.html_encode(status.message),
+						title: Rudolphs_Presents.get_text("token") + " - Error",
+						msg: "For some reason we could not deliver this item.<br /><br />Error: " + yootil.html_encode(status.message),
 						width: 350,
 						height: 150
 
@@ -189,8 +189,8 @@ class Rudolphs_Presents_Button {
 		} else {
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - Error",
-				msg: "This user can't receive anymore presents, their inventory is completely full.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - Error",
+				msg: "This user can't receive anymore items, their inventory is full.",
 				width: 350,
 				height: 150
 
@@ -252,8 +252,8 @@ class Rudolphs_Presents_Button {
 
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Present Tokens",
-				msg: "This is the amount of presents you have left to send.<br /><br />When posting, you have chance to earn more tokens.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - " + Rudolphs_Presents.get_text("token") + "s",
+				msg: "This is the amount of items you have left to send.<br /><br />When posting, you have chance to earn more.",
 				width: 350,
 				height: 160
 

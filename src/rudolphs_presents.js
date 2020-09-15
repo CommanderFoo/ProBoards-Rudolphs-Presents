@@ -61,6 +61,15 @@ class Rudolphs_Presents {
 			this.settings = plugin.settings;
 			this.images = plugin.images;
 
+			this.settings.text = {
+
+				profile_button: this.settings.profile_button_text,
+				dialog_title: this.settings.dialog_title_text,
+				present: this.settings.present_text,
+				token: this.settings.token_text
+
+			};
+
 			this.settings.starting_tokens = parseInt(this.settings.starting_tokens, 10) || 10;
 		}
 	}
@@ -83,6 +92,10 @@ class Rudolphs_Presents {
 		if(this.api.present(yootil.user.id()).unseen()){
 			new Rudolphs_Presents_Notification();
 		}
+	}
+
+	static get_text(key, lower = false){
+		return (lower)? this.settings.text[key].toLowerCase() : this.settings.text[key];
 	}
 
 }

@@ -2,7 +2,7 @@
 * @license
 * The MIT License (MIT)
 *
-* Copyright (c) 2018 pixeldepth.net - http://support.proboards.com/user/2671
+* Copyright (c) 2020 pixeldepth.net - http://support.proboards.com/user/2671
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -43,7 +43,7 @@ class Rudolphs_Presents_Notification {
 		let imgs = ["a", "b", "c", "d", "e", "f", "g", "h"];
 		let image = Rudolphs_Presents.images[imgs[~~ (Math.random() * imgs.length)]];
 
-		let $notification = $("<div title='You have received a present' class='rudolphs-presents-notification' style='background-image: url(\""  + image +"\");'></div>");
+		let $notification = $("<div title='You have received a " + Rudolphs_Presents.get_text("present", true) + "' class='rudolphs-presents-notification' style='background-image: url(\""  + image +"\");'></div>");
 
 		$notification.fadeIn(1000, () => $notification.addClass("rudolphs-presents-notification-rotate"));
 		$notification.on("click", this.mark_all_seen);
@@ -258,7 +258,7 @@ class Rudolphs_Presents_Button {
 	}
 
 	create_button(){
-		let $button = $("<a class='button' id='rudolphs-presents-button' href='#' role='button'>Rudolph's Presents</a>");
+		let $button = $("<a class='button' id='rudolphs-presents-button' href='#' role='button'>" + Rudolphs_Presents.get_text("profile_button") + "</a>");
 		let $conversation_button = $(".controls a.button[href^='/conversation/new/']");
 
 		if($conversation_button.length){
@@ -279,8 +279,8 @@ class Rudolphs_Presents_Button {
 		if(tokens <= 0 && !Rudolphs_Presents.api.get(yootil.user.id()).unlimited()){
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - No Present Tokens",
-				msg: "You currently have no more present tokens, however, you have a chance to earn more when you post.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - No " + Rudolphs_Presents.get_text("token") + "s",
+				msg: "You currently have no more " + Rudolphs_Presents.get_text("token", true) + "s, however, you have a chance to earn more when you post.",
 				width: 350,
 				height: 150
 
@@ -294,8 +294,8 @@ class Rudolphs_Presents_Button {
 		if(Rudolphs_Presents.api.present(yootil.page.member.id()).has_received_max_from(yootil.user.id())){
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - Already Sent",
-				msg: "You have already sent the maximum amount of presents to this user, you can't send anymore.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - Maximum Sent",
+				msg: "You have already sent the maximum amount of " + Rudolphs_Presents.get_text("present", true) + "s to this user, you can't send anymore.",
 				width: 350,
 				height: 150
 
@@ -307,8 +307,8 @@ class Rudolphs_Presents_Button {
 		if(!Rudolphs_Presents.api.space(yootil.page.member.id()).left()){
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - Error",
-				msg: "This user can't receive anymore presents, their inventory is completely full.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - Error",
+				msg: "This user can't receive anymore " + Rudolphs_Presents.get_text("present", true) + "s, their inventory is full.",
 				width: 350,
 				height: 150
 
@@ -324,7 +324,7 @@ class Rudolphs_Presents_Button {
 
 				//(529)
 
-				title: "Rudolph's Presents",
+				title: Rudolphs_Presents.get_text("dialog_title"),
 				resizable: true,
 				draggable: true,
 				modal: true,
@@ -336,7 +336,7 @@ class Rudolphs_Presents_Button {
 
 					{
 
-						text: "Send Present",
+						text: "Send",
 						click: this.send_present.bind(this),
 						disabled: true,
 						class: "rudolphs-presents-dialog-send-button",
@@ -415,8 +415,8 @@ class Rudolphs_Presents_Button {
 
 					new Rudolphs_Presents_Info_Dialog({
 
-						title: "Rudolph's Presents - Present Sent",
-						msg: "Your present was successfully sent.",
+						title: Rudolphs_Presents.get_text("dialog_title") + " - " + Rudolphs_Presents.get_text("present") + " Sent",
+						msg: "Your " + Rudolphs_Presents.get_text("present", true) + " was successfully sent.",
 						width: 350,
 						height: 150
 
@@ -429,8 +429,8 @@ class Rudolphs_Presents_Button {
 
 					new Rudolphs_Presents_Info_Dialog({
 
-						title: "Rudolph's Presents - Error",
-						msg: "For some reason we could not deliver this present.<br /><br />Error: " + yootil.html_encode(status.message),
+						title: Rudolphs_Presents.get_text("token") + " - Error",
+						msg: "For some reason we could not deliver this item.<br /><br />Error: " + yootil.html_encode(status.message),
 						width: 350,
 						height: 150
 
@@ -440,8 +440,8 @@ class Rudolphs_Presents_Button {
 		} else {
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Presents - Error",
-				msg: "This user can't receive anymore presents, their inventory is completely full.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - Error",
+				msg: "This user can't receive anymore items, their inventory is full.",
 				width: 350,
 				height: 150
 
@@ -503,8 +503,8 @@ class Rudolphs_Presents_Button {
 
 			new Rudolphs_Presents_Info_Dialog({
 
-				title: "Rudolph's Present Tokens",
-				msg: "This is the amount of presents you have left to send.<br /><br />When posting, you have chance to earn more tokens.",
+				title: Rudolphs_Presents.get_text("dialog_title") + " - " + Rudolphs_Presents.get_text("token") + "s",
+				msg: "This is the amount of items you have left to send.<br /><br />When posting, you have chance to earn more.",
 				width: 350,
 				height: 160
 
@@ -566,12 +566,12 @@ class Rudolphs_Presents_Profile_Box {
 
 				if(Rudolphs_Presents.date.get_time_left(true) > 0 || !presents[p].o){
 					if(yootil.page.member.id() != yootil.user.id()){
-						title = "Hey! That is not your present, you can not open that.";
+						title = "Hey! That is not your " + Rudolphs_Presents.get_text("present", true) + ", you can not open that.";
 					} else {
 						if(Rudolphs_Presents.date.get_time_left(true) <= 0){
-							title = "Present can be opened.";
+							title = Rudolphs_Presents.get_text("present") + " can be opened.";
 						} else {
-							title = "Present can be opened in " + Rudolphs_Presents.date.get_time_left().full_string + ".";
+							title = Rudolphs_Presents.get_text("present") + " can be opened in " + Rudolphs_Presents.date.get_time_left().full_string + ".";
 						}
 					}
 
@@ -581,11 +581,11 @@ class Rudolphs_Presents_Profile_Box {
 				} else {
 					image = Rudolphs_Presents.images.items;
 					pos = " background-position: -" + x_offset + "px -" + y_offset + "px;";
-					title = "Present from " + pb.text.escape_html(presents[p].n) + " (ID# " + parseInt(presents[p].u, 10) + ").";
+					title = Rudolphs_Presents.get_text("present") + " from " + pb.text.escape_html(presents[p].n) + " (ID# " + parseInt(presents[p].u, 10) + ").";
 				}
 
 				if(yootil.page.member.id() == yootil.user.id() && Rudolphs_Presents.permissions.member_banned()){
-					title = "You can never open this present, you are banned.";
+					title = "You can never open this " + Rudolphs_Presents.get_text("present", true) + ", you are banned.";
 				}
 
 				items_html += "<span title='" + title + "'" + data_attr + " data-present-id='" + presents[p].i + "' class='rudolphs-presents-profile-presents-present" + klass + "' style='background-image: url(\"" + image + "\");" + pos + "'></span>";
@@ -637,7 +637,7 @@ class Rudolphs_Presents_Profile_Box {
 						let present = Rudolphs_Presents.api.present(yootil.user.id()).open($span.attr("data-present-id"), uid);
 
 						if(present){
-							$span.attr("title", "Present from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ").");
+							$span.attr("title", Rudolphs_Presents.get_text("present") + " from " + yootil.html_encode(present.n, true) + " (ID# " + uid + ").");
 						} else {
 							$span.removeAttr("title");
 						}
@@ -724,9 +724,9 @@ class Rudolphs_Presents_Mini_Profile_Stats {
 
 				let html = "";
 
-				html += "<span class='rudolphs-presents-stats-sent'>Presents Sent: <span>" + sent + "</span></span><br />";
-				html += "<span class='rudolphs-presents-stats-received'>Presents Received: <span>" + received + "</span></span><br />";
-				html += "<span class='rudolphs-presents-stats-tokens'>Present Tokens: <span>" + tokens + "</span></span><br />";
+				html += "<span class='rudolphs-presents-stats-sent'>" + Rudolphs_Presents.get_text("present") + "s Sent: <span>" + sent + "</span></span><br />";
+				html += "<span class='rudolphs-presents-stats-received'>" + Rudolphs_Presents.get_text("present") + "s Received: <span>" + received + "</span></span><br />";
+				html += "<span class='rudolphs-presents-stats-tokens'>" + Rudolphs_Presents.get_text("present") + " " + Rudolphs_Presents.get_text("token") + "s: <span>" + tokens + "</span></span><br />";
 
 				$elem.html(html);
 
@@ -881,6 +881,15 @@ class Rudolphs_Presents {
 			this.settings = plugin.settings;
 			this.images = plugin.images;
 
+			this.settings.text = {
+
+				profile_button: this.settings.profile_button_text,
+				dialog_title: this.settings.dialog_title_text,
+				present: this.settings.present_text,
+				token: this.settings.token_text
+
+			};
+
 			this.settings.starting_tokens = parseInt(this.settings.starting_tokens, 10) || 10;
 		}
 	}
@@ -903,6 +912,10 @@ class Rudolphs_Presents {
 		if(this.api.present(yootil.user.id()).unseen()){
 			new Rudolphs_Presents_Notification();
 		}
+	}
+
+	static get_text(key, lower = false){
+		return (lower)? this.settings.text[key].toLowerCase() : this.settings.text[key];
 	}
 
 }
